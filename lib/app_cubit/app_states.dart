@@ -92,3 +92,5 @@ class SocialGetSearchUserSuccessState extends SocialStates {}
 class SocialGetSearchUserErrorState extends SocialStates {}
 
 
+class ChangeModeSuccessState extends SocialStates{}
+class SocialLoginOutSuccessState extends SocialStates{}

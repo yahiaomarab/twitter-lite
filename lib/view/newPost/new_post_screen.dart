@@ -56,17 +56,17 @@ class NewPostScreen extends StatelessWidget {
               child: Column(
                 children: [
                   if(state is SocialCreatePostLoadingState)
-                    LinearProgressIndicator(
+                    const LinearProgressIndicator(
                     color: lightColor,),
                   if(state is SocialCreatePostLoadingState)
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                   Row(
                     children: [
                       CircleAvatar(
                         radius: 25,
                         backgroundImage: NetworkImage(model!.image!),
                       ),
-                      SizedBox(width: 15,),
+                      const SizedBox(width: 15,),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +74,7 @@ class NewPostScreen extends StatelessWidget {
                             Row(
                               children: [
                                 Text(model.name!),
-                                SizedBox(width: 5,),
+                                const SizedBox(width: 5,),
                               ],
                             ),
                             Text('Public',
@@ -101,7 +101,7 @@ class NewPostScreen extends StatelessWidget {
                       ),
                         ),
                   ),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20,),
                   if(SocialCubit.get(context).postImage != null)
                      Stack(
                     alignment: AlignmentDirectional.topEnd,
@@ -112,7 +112,7 @@ class NewPostScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             image: DecorationImage(
-                                image:  FileImage(File(SocialCubit.get(context).postImage.path)) as ImageProvider,
+                                image:  FileImage(File(SocialCubit.get(context).postImage.path)),
                                 fit: BoxFit.cover
 
                             )
@@ -121,14 +121,14 @@ class NewPostScreen extends StatelessWidget {
                       IconButton(onPressed: (){
                         SocialCubit.get(context).removePostImage();
                       },
-                          icon: CircleAvatar(
+                          icon: const CircleAvatar(
                               backgroundColor: Colors.white,
                               child: Icon(Icons.close,color: textColor,)
                           )
                       )
                     ],
                   ),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20,),
                   Row(
                     children: [
                       Expanded(
@@ -138,7 +138,7 @@ class NewPostScreen extends StatelessWidget {
 
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Iconly_Broken.Image),
                             SizedBox(width: 5,),
                             Text('Photos')
@@ -147,7 +147,7 @@ class NewPostScreen extends StatelessWidget {
                       ),
                       Expanded(
                         child: TextButton(onPressed: (){},
-                            child: Text('# Tags')
+                            child: const Text('# Tags')
                           ),
                       ),
                     ],

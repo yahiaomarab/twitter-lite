@@ -11,7 +11,7 @@ import 'package:twitter_lite/styles/Iconly-Broken_icons.dart';
 import '../edit_profile/edit_profile_screen.dart';
 import '../user/user_screen.dart';
 
-class SettingsScreen extends StatelessWidget {
+class ProfileSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(

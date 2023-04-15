@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,7 @@ class SocialSignupCubit extends Cubit<SocialSignupStates>{
         email: email,
         password: password
     ).then((value) {
-      userCreate(
+      createUser(
           email: email,
           name: name,
           phone: phone,
@@ -36,7 +35,7 @@ class SocialSignupCubit extends Cubit<SocialSignupStates>{
     });
   }
 
-  void userCreate({
+  void createUser({
     required String email ,
     required String name ,
     required String phone ,

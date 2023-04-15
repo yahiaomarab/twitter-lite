@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twitter_lite/app_cubit/app_states.dart';
+import 'package:twitter_lite/shared/components/components.dart';
+import 'package:twitter_lite/shared/network/local/cache_helper.dart';
+import 'package:twitter_lite/view/login/login_screen.dart';
 import '../data/models/comment_model.dart';
 import '../data/models/message_model.dart';
 import '../data/models/post_model.dart';
@@ -13,7 +16,8 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import '../view/feeds/feeds_screen.dart';
 import '../view/search/search_screen.dart';
-import '../view/settings/settings_screen.dart';
+import '../view/settings/app_settings.dart';
+import '../view/settings/profileSettings_screen.dart';
 import '../view/users/users_screen.dart';
 
 class SocialCubit extends Cubit<SocialStates> {
@@ -54,16 +58,16 @@ class SocialCubit extends Cubit<SocialStates> {
     const FeedsScreen(),
     SearchScreen(),
     UsersScreen(),
-    SettingsScreen(),
+    ProfileSettingsScreen(),
+    AppSettings(),
   ];
 
-  List<String> titles = ['Home', 'Search', 'Friends', 'Profile'];
+  List<String> titles = ['Home', 'Search', 'Friends', 'Profile', 'Settings'];
 
   void changeBottomNav(int index) {
     currentIndex = index;
     if (currentIndex == 0) {
       getPosts();
-      getUserData();
     }
     if (currentIndex == 3) {
       getSomeonePosts(userModel!.uId!);
@@ -511,5 +515,24 @@ class SocialCubit extends Cubit<SocialStates> {
       }
     }
     emit(SocialGetSearchUserSuccessState());
+  }
+
+  bool isDark = false;
+  changeMode({bool? fromShare}) {
+    if (fromShare != null) {
+      isDark = fromShare;
+      emit(ChangeModeSuccessState());
+    } else {
+      isDark = !isDark;
+    }
+    CacheHelper.setBool("isDark", isDark).then((value) {
+      emit(ChangeModeSuccessState());
+    });
+  }
+
+  signOut(context) {
+    CacheHelper.remove(uId);
+    navigateAndFinish(context, LoginScreen());
+    emit(SocialLoginOutSuccessState());
   }
 }

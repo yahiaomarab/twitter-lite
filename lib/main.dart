@@ -34,8 +34,8 @@ void main() async {
 //   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   Bloc.observer = MyBlocObserver();
-
-  uId =await CacheHelper.getString( 'uId');
+  bool isDark = await CacheHelper.getBool('isDark');
+  uId = await CacheHelper.getString('uId');
   Widget widget;
   if (uId != null) {
     widget = SocialLayout();
@@ -44,13 +44,15 @@ void main() async {
   }
 
   runApp(MyApp(
-    startWidget: widget,
+    widget,
+    isDark,
   ));
 }
 
 class MyApp extends StatelessWidget {
   final Widget? startWidget;
-  MyApp({this.startWidget});
+  final bool isDark;
+  const MyApp(this.startWidget, this.isDark);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) => SocialCubit()
             ..getUserData()
-            ..getPosts(),
+            ..getPosts()
+            ..changeMode(fromShare: isDark),
         ),
       ],
       child: BlocConsumer<SocialCubit, SocialStates>(
@@ -69,8 +72,10 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: lightTheme,
             darkTheme: darkTheme,
-            themeMode: ThemeMode.light,
-            home: LoginScreen(),
+            themeMode: SocialCubit.get(context).isDark
+                ? ThemeMode.dark
+                : ThemeMode.light,
+            home: startWidget,
           );
         },
       ),

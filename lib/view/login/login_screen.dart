@@ -30,6 +30,7 @@ class LoginScreen extends StatelessWidget {
             CacheHelper.setString( 'uId',  state.uId).then((value) {
               navigateAndFinish(context, SocialLayout());
             });
+            showToast(text:'تم تسجيل الدخول بنجاح', state: ToastStates.success);
           }
         },
         builder: (context, state) {

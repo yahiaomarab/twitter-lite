@@ -56,6 +56,10 @@ class SocialLayout extends StatelessWidget {
               , label: 'Location'),
                BottomNavigationBarItem(icon: Icon(Iconly_Broken.Profile)
               ,label: 'Profile'),
+              BottomNavigationBarItem(
+                  icon: Icon(Iconly_Broken.More_Circle),
+                  label: 'More'
+              ),
             ],
 
           ),
