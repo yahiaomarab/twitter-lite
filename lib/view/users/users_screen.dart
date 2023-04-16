@@ -17,6 +17,7 @@ class UsersScreen extends StatelessWidget {
         return ConditionalBuilder(
           condition: SocialCubit.get(context).users.isNotEmpty,
           builder: (context) => Scaffold(
+
             body: ListView.separated(
               itemBuilder: (context, index) =>
                   builtusers(context, SocialCubit.get(context).users[index]),
