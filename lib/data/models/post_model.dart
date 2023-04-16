@@ -8,13 +8,13 @@ class PostModel {
   bool? isAccountVerified;
 
   PostModel(
-      {this.name,
-      this.uId,
-      this.image,
-      this.isAccountVerified,
-      this.postText,
-      this.postImage,
-      this.date});
+      {required this.name,
+      required this.uId,
+      required this.image,
+      required this.isAccountVerified,
+      required this.postText,
+      required this.postImage,
+      required this.date});
 
   factory PostModel.fromJson(Map<String, dynamic>? json) {
     return PostModel(

@@ -24,6 +24,7 @@ class SocialSignupCubit extends Cubit<SocialSignupStates>{
         email: email,
         password: password
     ).then((value) {
+      emit(SocialSignupSuccessState());
       createUser(
           email: email,
           name: name,

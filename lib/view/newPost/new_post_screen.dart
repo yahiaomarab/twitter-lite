@@ -9,16 +9,15 @@ import 'package:twitter_lite/styles/Iconly-Broken_icons.dart';
 import 'package:intl/intl.dart';
 
 class NewPostScreen extends StatelessWidget {
-
   var postTextController = TextEditingController();
 
   var formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SocialCubit , SocialStates>(
-      listener:(context , state){} ,
-      builder:(context , state){
+    return BlocConsumer<SocialCubit, SocialStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
         var model = SocialCubit.get(context).userModel;
         return Scaffold(
           appBar: defaultAppBar(
@@ -26,47 +25,53 @@ class NewPostScreen extends StatelessWidget {
               context: context,
               title: 'New Post',
               titleColor: textColor,
-              actions: [defaultTextButton(
-                  function: (){
-                    if(formKey.currentState!.validate()){
-                      var now = DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now());
-                      if(SocialCubit.get(context).postImage == null){
+              actions: [
+                defaultTextButton(
+                    function: () {
+                      var now = DateFormat('yyyy-MM-dd – kk:mm')
+                          .format(DateTime.now());
+                      if (SocialCubit.get(context).postImage == null) {
                         SocialCubit.get(context).createPost(
                             date: now.toString(),
-                            postText: postTextController.text
-                        );
-                      }else{
+                            postText: postTextController.text);
+                      } else {
                         SocialCubit.get(context).uploadPostImage(
                           date: now.toString(),
                           postText: postTextController.text,
                         );
+                        SocialCubit.get(context).removePostImage();
                       }
-                      showToast(text: 'Post Uploaded Done', state: ToastStates.success);
+                      showToast(
+                          text: 'Post Uploaded Done',
+                          state: ToastStates.success);
                       postTextController.text = '';
-                    }
-                  },
-                  text: 'Post',
-                  color: Colors.blue
-              )]
-          ),
+                    },
+                    text: 'Post',
+                    color: Colors.blue)
+              ]),
           body: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Form(
               key: formKey,
               child: Column(
                 children: [
-                  if(state is SocialCreatePostLoadingState)
+                  if (state is SocialCreatePostLoadingState)
                     const LinearProgressIndicator(
-                    color: lightColor,),
-                  if(state is SocialCreatePostLoadingState)
-                    const SizedBox(height: 10,),
+                      color: lightColor,
+                    ),
+                  if (state is SocialCreatePostLoadingState)
+                    const SizedBox(
+                      height: 10,
+                    ),
                   Row(
                     children: [
                       CircleAvatar(
                         radius: 25,
                         backgroundImage: NetworkImage(model!.image!),
                       ),
-                      const SizedBox(width: 15,),
+                      const SizedBox(
+                        width: 15,
+                      ),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,12 +79,14 @@ class NewPostScreen extends StatelessWidget {
                             Row(
                               children: [
                                 Text(model.name!),
-                                const SizedBox(width: 5,),
+                                const SizedBox(
+                                  width: 5,
+                                ),
                               ],
                             ),
-                            Text('Public',
+                            Text(
+                              'Public',
                               style: Theme.of(context).textTheme.caption,
-
                             ),
                           ],
                         ),
@@ -88,75 +95,80 @@ class NewPostScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: TextFormField(
-                      validator: (value){
-                          if(value!.isEmpty){
-                            return 'What\'s in your Mind !' ;
-                          }
-                              },
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'What\'s in your Mind !';
+                        }
+                      },
                       controller: postTextController,
                       decoration: InputDecoration(
                           hintText: "What's in your mind, ${model.name} ?",
-                      border: InputBorder.none,
-                        focusedBorder: InputBorder.none
-                      ),
-                        ),
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none),
+                    ),
                   ),
-                  const SizedBox(height: 20,),
-                  if(SocialCubit.get(context).postImage != null)
-                     Stack(
-                    alignment: AlignmentDirectional.topEnd,
-                    children: [
-                      Container(
-                        height: 140,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            image: DecorationImage(
-                                image:  FileImage(File(SocialCubit.get(context).postImage.path)),
-                                fit: BoxFit.cover
-
-                            )
-                        ),
-                      ),
-                      IconButton(onPressed: (){
-                        SocialCubit.get(context).removePostImage();
-                      },
-                          icon: const CircleAvatar(
-                              backgroundColor: Colors.white,
-                              child: Icon(Icons.close,color: textColor,)
-                          )
-                      )
-                    ],
+                  const SizedBox(
+                    height: 20,
                   ),
-                  const SizedBox(height: 20,),
+                  if (SocialCubit.get(context).postImage != null)
+                    Stack(
+                      alignment: AlignmentDirectional.topEnd,
+                      children: [
+                        Container(
+                          height: 140,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              image: DecorationImage(
+                                  image: FileImage(File(
+                                      SocialCubit.get(context).postImage.path)),
+                                  fit: BoxFit.cover)),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              SocialCubit.get(context).removePostImage();
+                            },
+                            icon: const CircleAvatar(
+                                backgroundColor: Colors.white,
+                                child: Icon(
+                                  Icons.close,
+                                  color: textColor,
+                                )))
+                      ],
+                    ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     children: [
                       Expanded(
-                        child: TextButton(onPressed: (){
-                          SocialCubit.get(context).getPostImage();
-                        },
-
+                        child: TextButton(
+                            onPressed: () {
+                              SocialCubit.get(context).getPostImage();
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Iconly_Broken.Image),
-                            SizedBox(width: 5,),
-                            Text('Photos')
-                          ],
-                        )),
+                              children: const [
+                                Icon(Iconly_Broken.Image),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text('Photos')
+                              ],
+                            )),
                       ),
                       Expanded(
-                        child: TextButton(onPressed: (){},
-                            child: const Text('# Tags')
-                          ),
+                        child: TextButton(
+                            onPressed: () {}, child: const Text('# Tags')),
                       ),
                     ],
                   )
-                ],),
+                ],
+              ),
             ),
           ),
         );
-      } ,
+      },
     );
   }
 }

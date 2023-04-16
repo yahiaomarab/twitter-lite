@@ -17,6 +17,7 @@ class SearchScreen extends StatelessWidget {
       listener: (context , state){},
       builder: (context , state){
         return Scaffold(
+          appBar: AppBar(),
           body: Column(
             children: [
               Padding(

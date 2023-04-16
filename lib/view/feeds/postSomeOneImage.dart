@@ -1,4 +1,3 @@
-import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twitter_lite/app_cubit/app_states.dart';
@@ -7,8 +6,6 @@ import 'package:twitter_lite/shared/components/components.dart';
 import 'package:twitter_lite/view/feeds/feeds_screen.dart';
 
 import '../../app_cubit/app_cubit.dart';
-import '../../shared/colors.dart';
-
 
 class SomeOnePostImage extends StatelessWidget {
   PostModel? model;

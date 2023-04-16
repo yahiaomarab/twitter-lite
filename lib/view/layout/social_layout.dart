@@ -4,6 +4,7 @@ import 'package:twitter_lite/app_cubit/app_cubit.dart';
 import 'package:twitter_lite/app_cubit/app_states.dart';
 import 'package:twitter_lite/shared/components/components.dart';
 import 'package:twitter_lite/styles/Iconly-Broken_icons.dart';
+import 'package:twitter_lite/view/search/search_screen.dart';
 
 import '../newPost/new_post_screen.dart';
 import '../chats/chats_screen.dart';
@@ -28,8 +29,10 @@ class SocialLayout extends StatelessWidget {
 
           appBar: AppBar(
             actions: [
-              IconButton(onPressed: (){},
-                  icon: const Icon(Iconly_Broken.Heart)),
+              IconButton(onPressed: (){
+                navigateTo(context, SearchScreen());
+              },
+                  icon: const Icon(Iconly_Broken.Search)),
               IconButton(onPressed: (){
                 SocialCubit.get(context).getUsers();
                 navigateTo(context, ChatsScreen());
@@ -49,9 +52,7 @@ class SocialLayout extends StatelessWidget {
                   icon: Icon(Iconly_Broken.Home),
                 label: 'Home'
               ),
-               BottomNavigationBarItem(
-                  icon: Icon(Iconly_Broken.Search),
-              label: 'Search'),
+
                BottomNavigationBarItem(icon: Icon(Iconly_Broken.Location)
               , label: 'Location'),
                BottomNavigationBarItem(icon: Icon(Iconly_Broken.Profile)

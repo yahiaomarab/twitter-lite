@@ -15,7 +15,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import '../view/feeds/feeds_screen.dart';
-import '../view/search/search_screen.dart';
 import '../view/settings/app_settings.dart';
 import '../view/settings/profileSettings_screen.dart';
 import '../view/users/users_screen.dart';
@@ -56,18 +55,20 @@ class SocialCubit extends Cubit<SocialStates> {
 
   List<Widget> screens = [
     const FeedsScreen(),
-    SearchScreen(),
     UsersScreen(),
     ProfileSettingsScreen(),
     AppSettings(),
   ];
 
-  List<String> titles = ['Home', 'Search', 'Friends', 'Profile', 'Settings'];
+  List<String> titles = ['Home',  'Friends', 'Profile', 'Settings'];
 
   void changeBottomNav(int index) {
     currentIndex = index;
     if (currentIndex == 0) {
       getPosts();
+    }
+    if (currentIndex == 2) {
+      getUsers();
     }
     if (currentIndex == 3) {
       getSomeonePosts(userModel!.uId!);
@@ -119,6 +120,7 @@ class SocialCubit extends Cubit<SocialStates> {
             phone: userModel!.phone!,
             bio: userModel!.bio!,
             image: value);
+        emit(SocialUploadProfileImageSuccessState());
       }).catchError((error) {
         emit(SocialUploadProfileImageErrorState());
       });
@@ -140,6 +142,7 @@ class SocialCubit extends Cubit<SocialStates> {
             phone: userModel!.phone!,
             bio: userModel!.bio!,
             cover: value);
+        emit(SocialUploadCoverImageSuccessState());
       }).catchError((error) {
         emit(SocialUploadCoverImageErrorState());
       });
@@ -169,6 +172,7 @@ class SocialCubit extends Cubit<SocialStates> {
         .doc(userModel!.uId)
         .update(model.toMap())
         .then((value) {
+      emit(SocialUserUpdateSuccessState());
       getUserData();
     }).catchError((error) {
       emit(SocialUserUpdateErrorState());
@@ -216,21 +220,23 @@ class SocialCubit extends Cubit<SocialStates> {
   void createPost({
     required String date,
     dynamic postImage,
-    required String postText,
+     String? postText,
   }) {
     emit(SocialUserUpdateLoadingState());
     PostModel model = PostModel(
+        image: userModel!.image,
         name: userModel!.name,
         uId: userModel!.uId,
-        image: userModel!.image,
         date: date,
         postImage: postImage ?? '',
-        postText: postText);
+        postText: postText?? '',
+        isAccountVerified: false);
     FirebaseFirestore.instance
         .collection('posts')
         .add(model.toMap())
         .then((value) {
       emit(SocialCreatePostSuccessState());
+      getPosts();
     }).catchError((error) {
       emit(SocialCreatePostErrorState());
     });
@@ -240,7 +246,6 @@ class SocialCubit extends Cubit<SocialStates> {
   List<String> postsId = [];
   List<int> likes = [];
   List<int> commentsSum = [];
-  List<bool> listOfIsLiked = [];
 
   void getPosts() {
     posts = [];
@@ -251,27 +256,10 @@ class SocialCubit extends Cubit<SocialStates> {
           likes.add(value.docs.length);
           postsId.add(element.id);
           posts.add(PostModel.fromJson(element.data()));
-          // Check Like Post !!
-          // value.docs.forEach((element) {
-          //   if (element.id == userModel!.uId){
-          //     postLikedList.add(true) ;
-          //   }
-          //   postLikedList.add(false) ;
-          // });
-          // print(postLikedList);
-          // print('--------------------------');
-          listOfIsLiked.add(isLiked(element.id));
-
           emit(SocialGetPostsSuccessState());
         }).catchError((error) {
           emit(SocialLikePostErrorState(error.toString()));
         });
-        // element.reference.collection('comments').get().then((value) {
-        //   commentsSum.add(value.docs.length);
-        //
-        // }).catchError((error){
-        //
-        // });
       }
       emit(SocialGetPostsSuccessState());
     }).catchError((error) {
@@ -288,6 +276,7 @@ class SocialCubit extends Cubit<SocialStates> {
         .set({
       'like': true,
     }).then((value) {
+      // getPosts();
       emit(SocialLikePostSuccessState());
     }).catchError((error) {
       emit(SocialLikePostErrorState(error.toString()));
@@ -456,6 +445,21 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+  void unFollowSomeone(String userId) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('homies')
+        .doc(userModel!.uId)
+        .delete()
+        .then((value) {
+      emit(SocialUnFollowSomeoneSuccessState());
+      isMyProfile(userId);
+    }).catchError((error) {
+      emit(SocialUnFollowSomeoneErrorState(error.toString()));
+    });
+  }
+
   var followers;
   int? getNumOfFollowers(String userId) {
     followers = 0;
@@ -485,11 +489,12 @@ class SocialCubit extends Cubit<SocialStates> {
         }
       }
     });
-    return null;
+    return myId;
   }
 
+  var myLike;
   dynamic isLiked(String postId) {
-    var myLike = false;
+    myLike = false;
     FirebaseFirestore.instance
         .collection('posts')
         .doc(postId)
@@ -499,6 +504,7 @@ class SocialCubit extends Cubit<SocialStates> {
       for (var element in value.docs) {
         if (element.id == userModel!.uId) {
           myLike = true;
+          emit(SocialisLikedPostSuccessState());
         }
       }
 

@@ -25,6 +25,10 @@ class UserScreen extends StatelessWidget {
           SocialCubit.get(context).myId = true;
           SocialCubit.get(context).followers =
               SocialCubit.get(context).followers + 1;
+        } else if (state is SocialUnFollowSomeoneSuccessState) {
+          SocialCubit.get(context).myId = false;
+          SocialCubit.get(context).followers =
+              SocialCubit.get(context).followers - 1;
         }
       },
       builder: (context, state) {
@@ -102,7 +106,7 @@ class UserScreen extends StatelessWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  'Homies',
+                                  'followers',
                                   style: Theme.of(context)
                                       .textTheme
                                       .caption!
@@ -167,19 +171,19 @@ class UserScreen extends StatelessWidget {
   }
 
   Widget buildButton(context) => SocialCubit.get(context).myId
-      ? OutlinedButton(
-          onPressed: () {},
-          child: const Text(
-            'You can\'t lose your Homies !',
-            style: TextStyle(color: Colors.red),
-          ),
-        )
+      ? defaultButton(
+          function: () {
+            SocialCubit.get(context).unFollowSomeone(userId);
+            print(SocialCubit.get(context).myId);
+            buildButton(context);
+          },
+          text: 'UnFollow')
       : defaultButton(
           function: () {
             SocialCubit.get(context).followSomeone(userId);
             buildButton(context);
           },
-          text: 'Homie');
+          text: 'Follow');
 }
 
 Widget buildSomeonePostItem(PostModel model, context, index) => Card(
@@ -250,7 +254,8 @@ Widget buildSomeonePostItem(PostModel model, context, index) => Card(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: myDivider(),
             ),
-            Text(
+            if (model.postText != '')
+              Text(
               '${model.postText}',
               style: Theme.of(context).textTheme.bodyText1,
             ),
